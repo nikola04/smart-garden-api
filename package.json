@@ -1,0 +1,38 @@
+{
+  "name": "server-jagode",
+  "version": "1.0.0",
+  "description": "Backend server for ESP project",
+  "main": "server.ts",
+  "scripts": {
+    "predev": "npm run lint",
+    "dev": "node --env-file=.development.env --import=tsx src/server.ts",
+    "dev:watch": "node --env-file=.development.env --import=tsx --watch src/server.ts",
+    "prebuild": "npm run lint",
+    "build": "tsc",
+    "start": "node --require module-alias/register --env-file=.production.env dist/server.js",
+    "lint": "eslint src/ --ext .ts,.js",
+    "lint:fix": "eslint --fix src/ --ext .ts,.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikola04/jagode-server.git"
+  },
+  "author": "Nikola Nedeljkovic",
+  "license": "GPL-3.0-only",
+  "bugs": {
+    "url": "https://github.com/nikola04/jagode-server/issues"
+  },
+  "homepage": "https://github.com/nikola04/jagode-server#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "tsc": "^2.0.4"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.2",
+    "eslint": "^9.27.0",
+    "module-alias": "^2.2.3",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.32.1"
+  }
+}
