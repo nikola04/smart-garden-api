@@ -1,5 +1,5 @@
 {
-  "name": "server-jagode",
+  "name": "smart-garden",
   "version": "1.0.0",
   "description": "Backend server for ESP project",
   "main": "server.ts",
