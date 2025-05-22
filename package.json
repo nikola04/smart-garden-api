@@ -25,7 +25,9 @@
   "homepage": "https://github.com/nikola04/smart-garden-api#readme",
   "dependencies": {
     "express": "^5.1.0",
-    "tsc": "^2.0.4"
+    "mongoose": "^8.15.0",
+    "tsc": "^2.0.4",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.2",
