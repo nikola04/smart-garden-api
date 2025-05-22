@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nikola04/jagode-server.git"
+    "url": "git+https://github.com/nikola04/smart-garden-api.git"
   },
   "author": "Nikola Nedeljkovic",
   "license": "GPL-3.0-only",
   "bugs": {
-    "url": "https://github.com/nikola04/jagode-server/issues"
+    "url": "https://github.com/nikola04/smart-garden-api/issues"
   },
-  "homepage": "https://github.com/nikola04/jagode-server#readme",
+  "homepage": "https://github.com/nikola04/smart-garden-api#readme",
   "dependencies": {
     "express": "^5.1.0",
     "tsc": "^2.0.4"
