@@ -20,9 +20,7 @@ export const loginController = async (req: Request, res: Response): Promise<void
         responseHelper.success({ res, message: "Login successful.", data: { user, accessToken, csrfToken } });
     }catch(err){
         if(err instanceof Error){
-            if(err.message === "user not found")
-                return responseHelper.error({ res, code: 401, message: "User not found." });
-            if(err.message === "invalid password")
+            if(err.message === "user not found" || err.message === "invalid password")
                 return responseHelper.error({ res, code: 404, message: "User not found." });
         }
 

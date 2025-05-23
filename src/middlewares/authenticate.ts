@@ -12,18 +12,18 @@ export interface AuthRequest extends Request {
 export const authenticate = (req: AuthRequest, res: Response, next: NextFunction): void => {
     try{
         if (!req.headers || !req.headers.authorization)
-            return responseHelper.error({ res, code: 401, message: "Unauthorized" });
-        if (!req.cookies || !req.cookies.csrf_token || !req.query || !req.query.csrf)
-            return responseHelper.error({ res, code: 401, message: "Unauthorized" });
+            return responseHelper.error({ res, code: 401, message: "Unauthorized." });
+        if (!req.cookies || !req.cookies.csrf_token || ((!req.query || !req.query.csrf) && !req.headers["x-csrf-token"]))
+            return responseHelper.error({ res, code: 401, message: "Unauthorized." });
         const authHeader = req.headers.authorization;
         const csrfCookie = req.cookies.csrf_token;
-        const csrfQuery = req.query.csrf;
+        const csrf = req.headers["x-csrf-token"] ?? req.query.csrf;
 
         const token = authHeader.split(" ")[1];
         if (!token)
-            return responseHelper.error({ res, code: 401, message: "Unauthorized" });
-        if (csrfCookie !== csrfQuery)
-            return responseHelper.error({ res, code: 401, message: "CSRF token mismatch" });
+            return responseHelper.error({ res, code: 401, message: "Unauthorized." });
+        if (csrfCookie !== csrf)
+            return responseHelper.error({ res, code: 401, message: "CSRF token mismatch." });
 
         const data = authHandler.verifyAndDecodeToken(token);
         const userId = data.id;
@@ -32,14 +32,13 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
         };
         next();
     }catch (err) {
-        console.log(err);
         if(err === ValidatorErrors.InvalidToken || err === ValidatorErrors.InvalidTokenStructure || err === ValidatorErrors.InvalidAlgorithm)
-            return responseHelper.error({ res, code: 401, message: "Invalid authorization token" });
+            return responseHelper.error({ res, code: 401, message: "Invalid authorization token." });
         if(err === ValidatorErrors.TokenExpired)
-            return responseHelper.error({ res, code: 401, message: "Expired authorization token" });
+            return responseHelper.error({ res, code: 401, message: "Expired authorization token." });
         if(err === ValidatorErrors.InvalidSecretOrKey || err === ValidatorErrors.TokenNotActive)
-            return responseHelper.error({ res, code: 401, message: "Invalid token or expired key" });
+            return responseHelper.error({ res, code: 401, message: "Invalid token or expired key." });
 
-        return responseHelper.error({ res, code: 500, message: "Internal server error" });
+        return responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };

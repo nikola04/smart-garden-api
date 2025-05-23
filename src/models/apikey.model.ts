@@ -8,6 +8,7 @@ const schema = new Schema<IAPIKey>({
         ref: "devices",
         required: true
     },
+    expiresAt: { type: Date, default: null },
     createdAt: { type: Date, default: Date.now },
 });
 

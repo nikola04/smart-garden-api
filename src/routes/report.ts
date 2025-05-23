@@ -1,10 +1,8 @@
+import { reportController } from "@/controllers/device/report.controller";
 import { Router } from "express";
 
 const router = Router();
 
-router.post("/", (req, res) => {
-    console.log(req.body);
-    res.json({ status: "OK" });
-});
+router.post("/", reportController);
 
 export default router;

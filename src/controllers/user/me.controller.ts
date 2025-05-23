@@ -8,11 +8,11 @@ const userService = new UserService();
 export const userMeController = async (req: AuthRequest, res: Response): Promise<void> => {
     try{
         if(!req.user)
-            return responseHelper.error({ res, code: 401, message: "Unauthorized" });
+            return responseHelper.error({ res, code: 401, message: "Unauthorized." });
 
         const user = await userService.getUserById(req.user.id);
 
-        responseHelper.success({ res, message: "Login successful.", data: { user } });
+        responseHelper.success({ res, message: "Found user successfully.", data: { user } });
     }catch(err){
         if(err instanceof Error){
             if(err.message === "user not found")

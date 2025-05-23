@@ -8,6 +8,11 @@ const schema = new Schema<IDevice>({
         enum: ["ESP32"],
         required: true
     },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "users",
+        required: true
+    },
     addedAt: { type: Date, default: Date.now }
 });
 
