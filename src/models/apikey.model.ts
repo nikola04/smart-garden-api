@@ -6,6 +6,7 @@ const schema = new Schema<IAPIKey>({
     device: {
         type: Schema.Types.ObjectId,
         ref: "devices",
+        unique: true,
         required: true
     },
     expiresAt: { type: Date, default: null },

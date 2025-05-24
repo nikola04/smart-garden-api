@@ -9,6 +9,13 @@ export class APIKeysRepository {
         }
         APIKeysRepository.instance = this;
     }
+
+    public async findValidByDeviceId(deviceId: string): Promise<APIKeyDocument|null>{
+        await APIKey.deleteOne({ device: deviceId, expiresAt: { $ne: null, $lt: new Date() } });
+        const key = await APIKey.findOne({ device: deviceId });
+        return key;
+    }
+
     public async findValidByKey(key: string): Promise<APIKeyDocument|null>{
         const apiKey = await APIKey.findOne({ key });
         if(apiKey === null || apiKey.expiresAt === null || apiKey.expiresAt >= new Date())
@@ -16,8 +23,15 @@ export class APIKeysRepository {
         await APIKey.deleteOne({ _id: apiKey.id });
         return null;
     }
+
     public async createAPIKey(deviceId: string, key: string, expiresAt?: Date): Promise<APIKeyDocument|null> {
-        const apiKey = await APIKey.create({ device: deviceId, key, expiresAt });
-        return apiKey;
+        try{
+            const apiKey = await APIKey.create({ device: deviceId, key, expiresAt });
+            return apiKey;
+        }catch(err){
+            if(err instanceof Error && err.message.includes("duplicate key"))
+                throw new Error("device has key");
+            return null;
+        }
     }
 }

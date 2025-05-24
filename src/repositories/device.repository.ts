@@ -13,4 +13,8 @@ export class DeviceRepository {
         const device = await Device.findById(deviceId);
         return device;
     }
+    public async getDevicesByUserId(userId: string): Promise<DeviceDocument[]>{
+        const devices = await Device.find({ user: userId });
+        return devices;
+    }
 }

@@ -33,9 +33,9 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
         next();
     }catch (err) {
         if(err === ValidatorErrors.InvalidToken || err === ValidatorErrors.InvalidTokenStructure || err === ValidatorErrors.InvalidAlgorithm)
-            return responseHelper.error({ res, code: 401, message: "Invalid authorization token." });
+            return responseHelper.error({ res, code: 401, message: "Invalid authorization." });
         if(err === ValidatorErrors.TokenExpired)
-            return responseHelper.error({ res, code: 401, message: "Expired authorization token." });
+            return responseHelper.error({ res, code: 401, message: "Expired authorization." });
         if(err === ValidatorErrors.InvalidSecretOrKey || err === ValidatorErrors.TokenNotActive)
             return responseHelper.error({ res, code: 401, message: "Invalid token or expired key." });
 
