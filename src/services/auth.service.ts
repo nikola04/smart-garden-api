@@ -1,6 +1,6 @@
 import { UserDocument } from "@/types/user";
 import { UserRepository } from "../repositories/user.repository";
-import { authConfig, authHandler } from "@/configs/auth";
+import { authConfig, authHandler } from "@/configs/auth.config";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import Token from "@/models/token.model";

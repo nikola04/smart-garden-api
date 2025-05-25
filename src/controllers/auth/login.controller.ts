@@ -1,4 +1,4 @@
-import { authConfig } from "@/configs/auth";
+import { authConfig } from "@/configs/auth.config";
 import responseHelper from "@/helpers/response.helper";
 import { AuthService } from "@/services/auth.service";
 import { Request, Response } from "express";

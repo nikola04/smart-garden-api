@@ -1,4 +1,4 @@
-import { authHandler } from "@/configs/auth";
+import { authHandler } from "@/configs/auth.config";
 import responseHelper from "@/helpers/response.helper";
 import { ValidatorErrors } from "easy-token-auth";
 import { Request, Response, NextFunction } from "express";

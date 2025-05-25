@@ -1,7 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import apiRouter from "./routes";
-import db from "./configs/database";
+import db from "./configs/db.config";
 const app = express();
 
 app.use(express.json());

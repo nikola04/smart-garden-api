@@ -1,3 +1,4 @@
+import appConfig from "@/configs/app.config";
 import { APIKeysRepository } from "@/repositories/apikeys.repository";
 import { DeviceRepository } from "@/repositories/device.repository";
 import { APIKeyDocument } from "@/types/apikey";
@@ -19,6 +20,13 @@ export class DeviceService{
     }
 
     public async createDevice(userId: string, name: string, type: DeviceType): Promise<DeviceDocument> {
+        const devices = await this.deviceRepository.getDevicesByUserId(userId);
+        if(devices.length >= appConfig.maxUserDevices)
+            throw new Error("devices limit reached");
+
+        if(devices.find((device) => device.name === name))
+            throw new Error("name already used");
+
         const device = await this.deviceRepository.createDevice(userId, name, type);
         if(!device)
             throw new Error("device not created");

@@ -31,9 +31,14 @@ export const createDevicesController = async (req: AuthRequest, res: Response): 
         return responseHelper.success({ res, code: 200, message: "Created devices successfully.", data: { device: formatedDevice } });
     }catch(err){
         if(err instanceof Error){
-            if(err.name === "device not created")
+            if(err.message === "device not created")
                 return responseHelper.error({ res, code: 500, message: "Error creating device."});
+            if(err.message === "devices limit reached")
+                return responseHelper.error({ res, code: 403, message: "Device limit reached."});
+            if(err.message === "name already used")
+                return responseHelper.error({ res, code: 409, message: "Device name already used."});
         }
+        console.error(err);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };
