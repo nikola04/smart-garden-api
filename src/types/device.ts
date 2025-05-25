@@ -2,7 +2,8 @@ import { Document, Types } from "mongoose";
 import { IUser } from "./user";
 
 export enum DeviceType {
-    ESP32 = "ESP32"
+    ESP32 = "ESP32",
+    Arduino = "Arduino"
 }
 
 export interface IDevice {

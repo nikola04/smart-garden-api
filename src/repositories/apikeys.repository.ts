@@ -10,10 +10,10 @@ export class APIKeysRepository {
         APIKeysRepository.instance = this;
     }
 
-    public async findValidByDeviceId(deviceId: string): Promise<APIKeyDocument|null>{
-        await APIKey.deleteOne({ device: deviceId, expiresAt: { $ne: null, $lt: new Date() } });
-        const key = await APIKey.findOne({ device: deviceId });
-        return key;
+    public async findValidByDeviceId(deviceId: string): Promise<APIKeyDocument[]>{
+        await APIKey.deleteMany({ device: deviceId, expiresAt: { $ne: null, $lt: new Date() } });
+        const keys = await APIKey.find({ device: deviceId });
+        return keys;
     }
 
     public async findValidByKey(key: string): Promise<APIKeyDocument|null>{
@@ -33,5 +33,10 @@ export class APIKeysRepository {
                 throw new Error("device has key");
             return null;
         }
+    }
+
+    public async deleteAPIKey(deviceId: string, keyId: string): Promise<boolean> {
+        const deleted = await APIKey.deleteOne({ device: deviceId, _id: keyId });
+        return deleted.deletedCount > 0;
     }
 }
