@@ -15,7 +15,7 @@ export const getKeysController = async (req: AuthRequest, res: Response): Promis
         const keys = await deviceService.getAPIKeys(deviceId, req.user.id);
         const formated = keys.map(key => ({ id: key.id, expiresAt: key.expiresAt, createdAt: key.createdAt }));
 
-        return responseHelper.success({ res, code: 200, message: "API key created successfully.", data: { keys: formated } });
+        return responseHelper.success({ res, code: 200, message: "API key found successfully.", data: { keys: formated } });
     }catch(err){
         if(err instanceof Error){
             if(err.message === "device not found")

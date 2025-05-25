@@ -11,8 +11,9 @@ export const userMeController = async (req: AuthRequest, res: Response): Promise
             return responseHelper.error({ res, code: 401, message: "Unauthorized." });
 
         const user = await userService.getUserById(req.user.id);
+        const userFormated = ({ id: user.id, name: user.name, avatar: user.avatar, email: user.email, createdAt: user.createdAt });
 
-        responseHelper.success({ res, message: "Found user successfully.", data: { user } });
+        responseHelper.success({ res, message: "Found user successfully.", data: { user: userFormated } });
     }catch(err){
         if(err instanceof Error){
             if(err.message === "user not found")

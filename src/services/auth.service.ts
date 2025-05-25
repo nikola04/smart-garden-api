@@ -1,4 +1,4 @@
-import { IUser } from "@/types/user";
+import { UserDocument } from "@/types/user";
 import { UserRepository } from "../repositories/user.repository";
 import { authConfig, authHandler } from "@/configs/auth";
 import bcrypt from "bcrypt";
@@ -16,7 +16,7 @@ export class AuthService{
      * @param password - User password
      * @returns Promise User
      */
-    public async login(email: string, password: string): Promise<{ user: IUser, accessToken: string, refreshToken: string, csrfToken: string }> {
+    public async login(email: string, password: string): Promise<{ user: UserDocument, accessToken: string, refreshToken: string, csrfToken: string }> {
         const user = await this.userRepository.getUserByEmail(email);
         if(!user)
             throw new Error("user not found");

@@ -1,12 +1,14 @@
-import { getDevicesController, updateDeviceController } from "@/controllers/device/device.controller";
+import { createDevicesController, deleteDeviceController, getDevicesController, updateDeviceController } from "@/controllers/device/device.controller";
 import { createKeyController, deleteKeyController, getKeysController } from "@/controllers/device/key.controller";
-import { validateDeviceRequest } from "@/validators/device.validator";
+import { validateDeviceRequest, validateDeviceRequestBody } from "@/validators/device.validator";
 import { Router } from "express";
 
 const router = Router();
 
 router.get("/", getDevicesController);
-router.patch("/:id", validateDeviceRequest, updateDeviceController);
+router.post("/", validateDeviceRequestBody, createDevicesController);
+router.patch("/:id", validateDeviceRequest, validateDeviceRequestBody, updateDeviceController);
+router.delete("/:id", validateDeviceRequest, deleteDeviceController);
 
 router.get("/:id/key", validateDeviceRequest, getKeysController);
 router.post("/:id/key", validateDeviceRequest, createKeyController);

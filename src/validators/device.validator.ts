@@ -12,6 +12,19 @@ export const validateDeviceRequest = (req: AuthRequest, res: Response, next: Nex
     next();
 };
 
+export const validateDeviceRequestBody = (req: AuthRequest, res: Response, next: NextFunction): void => {
+    if(!req.body || !req.body.name || typeof req.body.name !== "string" || !req.body.type || typeof req.body.type !== "string")
+        return responseHelper.error({ res, code: 400, message: "Invalid request body." });
+
+    const { name, type } = req.body;
+    if(!isValidDeviceName(name))
+        return responseHelper.error({ res, code: 400, message: "Invalid device name." });
+    if(!isValidDeviceType(type))
+        return responseHelper.error({ res, code: 400, message: "Invalid device type." });
+
+    next();
+};
+
 export const isValidDeviceName = (name: string): boolean => {
     const nameRegex = /^[a-zA-Z0-9_.\-\s]{2,50}$/;
     return nameRegex.test(name);

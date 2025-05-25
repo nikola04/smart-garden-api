@@ -18,11 +18,28 @@ export class DeviceService{
         return devices;
     }
 
+    public async createDevice(userId: string, name: string, type: DeviceType): Promise<DeviceDocument> {
+        const device = await this.deviceRepository.createDevice(userId, name, type);
+        if(!device)
+            throw new Error("device not created");
+        return device;
+    }
+
     public async updateDevice(deviceId: string, userId: string, name: string, type: DeviceType): Promise<DeviceDocument> {
         const device = await this.deviceRepository.updateDevice(deviceId, userId, name, type);
         if(!device)
             throw new Error("device not found");
         return device;
+    }
+
+    public async deleteDevice(deviceId: string, userId: string): Promise<void> {
+        const deleted = await this.deviceRepository.deleteDevice(deviceId, userId);
+        if(!deleted)
+            throw new Error("device not found");
+
+        this.apiKeyRepository.deleteDeviceAPIKeys(deviceId).catch(err => {
+            console.error(`Failed to delete API keys for device ${deviceId}:`, err);
+        });
     }
 
     public async getAPIKeys(deviceId: string, userId: string): Promise<APIKeyDocument[]>{

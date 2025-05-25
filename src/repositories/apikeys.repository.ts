@@ -39,4 +39,9 @@ export class APIKeysRepository {
         const deleted = await APIKey.deleteOne({ device: deviceId, _id: keyId });
         return deleted.deletedCount > 0;
     }
+
+    public async deleteDeviceAPIKeys(deviceId: string): Promise<boolean> {
+        const deleted = await APIKey.deleteMany({ device: deviceId });
+        return deleted.deletedCount > 0;
+    }
 }
