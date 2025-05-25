@@ -12,7 +12,7 @@ export const getDevicesController = async (req: AuthRequest, res: Response): Pro
             return responseHelper.error({ res, code: 401, message: "Unauthorized." });
 
         const devices = await deviceService.getDevices(req.user.id);
-        const formatedDevices = devices.map(device => ({ id: device.id, name: device.name, type: device.deviceType, addedAt: device.addedAt, userId: device.user.toString() }));
+        const formatedDevices = devices.map(device => ({ id: device.id, name: device.name, type: device.type, addedAt: device.addedAt, userId: device.user.toString() }));
 
         return responseHelper.success({ res, code: 200, message: "Found user devices successfully.", data: { devices: formatedDevices } });
     }catch(_err){
@@ -37,7 +37,7 @@ export const updateDeviceController = async (req: AuthRequest, res: Response): P
         const deviceId = req.params.id;
 
         const device = await deviceService.updateDevice(deviceId, req.user.id, name, type);
-        const formatedDevice = ({ id: device.id, name: device.name, type: device.deviceType, addedAt: device.addedAt, userId: device.user.toString() });
+        const formatedDevice = ({ id: device.id, name: device.name, type: device.type, addedAt: device.addedAt, userId: device.user.toString() });
 
         return responseHelper.success({ res, code: 200, message: "Updated device successfully.", data: { device: formatedDevice } });
     }catch(err){

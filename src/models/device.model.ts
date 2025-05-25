@@ -12,7 +12,7 @@ const schema = new Schema<IDevice>({
         },
         trim: true
     },
-    deviceType: {
+    type: {
         type: String,
         enum: Object.values(DeviceType),
         required: true

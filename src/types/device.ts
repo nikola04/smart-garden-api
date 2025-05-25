@@ -8,7 +8,7 @@ export enum DeviceType {
 
 export interface IDevice {
     name?: string;
-    deviceType: DeviceType;
+    type: DeviceType;
     user: Types.ObjectId | IUser;
     addedAt: Date;
 }
