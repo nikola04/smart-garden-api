@@ -8,6 +8,7 @@ const schema = new Schema<IToken>({
         ref: "users",
         required: true
     },
+    refreshedAt: { type: Date, default: Date.now },
     expiresAt: { type: Date, required: true },
     createdAt: { type: Date, default: Date.now },
 });

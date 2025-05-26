@@ -1,14 +1,36 @@
-import { UserDocument } from "@/types/user";
+import { IUser, UserDocument } from "@/types/user";
 import { UserRepository } from "../repositories/user.repository";
-import { authConfig, authHandler } from "@/configs/auth.config";
+import { authHandler } from "@/configs/auth.config";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import Token from "@/models/token.model";
+import { TokenRepository } from "@/repositories/token.repository";
+import { hashRefreshTokenData } from "easy-token-auth";
 
 export class AuthService{
     private userRepository: UserRepository;
+    private tokenRepository: TokenRepository;
     constructor(){
         this.userRepository = new UserRepository();
+        this.tokenRepository = new TokenRepository();
+    }
+    public async refresh(value: string): Promise<{ user: IUser, accessToken: string, refreshToken: string, csrfToken: string }> {
+        const data = authHandler.verifyAndDecodeToken(value);
+        const hashedData = hashRefreshTokenData(data);
+        const token = await this.tokenRepository.getToken(hashedData, true);
+        if(!token)
+            throw new Error("token not found");
+
+        const user = token.user as IUser;
+        if(token.expiresAt <= new Date())
+            throw new Error("token expired");
+
+        const accessToken = authHandler.generateAccessToken({ id: user.id });
+        const { hashedToken, jwt: refreshToken } = authHandler.generateRefreshToken();
+        const csrfToken = crypto.randomBytes(64).toString("hex");
+
+        await this.tokenRepository.updateToken(user.id, hashedToken);
+
+        return ({ user, accessToken, refreshToken, csrfToken });
     }
     /**
      * Login user with email and password
@@ -27,7 +49,7 @@ export class AuthService{
         const { jwt: refreshToken, hashedToken } = authHandler.generateRefreshToken();
         const csrfToken = crypto.randomBytes(64).toString("hex");
 
-        await this.saveRefreshToken(user.id, hashedToken);
+        await this.tokenRepository.saveToken(user.id, hashedToken);
 
         return ({
             user,
@@ -38,14 +60,5 @@ export class AuthService{
     }
     private validatePassword(password: string, hashedPassword: string): boolean{
         return bcrypt.compareSync(password, hashedPassword);
-    }
-    private async saveRefreshToken(userId: string, hashedToken: string): Promise<void> {
-        const token = new Token({
-            user: userId,
-            token: hashedToken,
-            createdAt: new Date(),
-            expiresAt: new Date(Date.now() + authConfig.refresh_token.expiry * 1000),
-        });
-        await token.save();
     }
 }

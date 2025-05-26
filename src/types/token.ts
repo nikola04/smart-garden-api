@@ -5,6 +5,7 @@ export interface IToken {
     token: string;
     user: Types.ObjectId | IUser;
     createdAt: Date;
+    refreshedAt: Date;
     expiresAt: Date;
 }
 
