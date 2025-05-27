@@ -13,9 +13,10 @@ export class DeviceRepository {
         const device = await Device.findById(deviceId);
         return device;
     }
-    public async createDevice(userId: string, name: string, type: DeviceType): Promise<DeviceDocument|null>{
+    public async createDevice(userId: string, projectId: string, name: string, type: DeviceType): Promise<DeviceDocument|null>{
         const device = await Device.create({
             user: userId,
+            project: projectId,
             name,
             type
         });
@@ -29,8 +30,12 @@ export class DeviceRepository {
         const deleted = await Device.deleteOne({ _id: deviceId, user: userId });
         return deleted.deletedCount > 0;
     }
-    public async getDevicesByUserId(userId: string): Promise<DeviceDocument[]>{
+    public async getUserDevices(userId: string): Promise<DeviceDocument[]>{
         const devices = await Device.find({ user: userId });
+        return devices;
+    }
+    public async getProjectDevices(userId: string, projectId: string): Promise<DeviceDocument[]> {
+        const devices = await Device.find({ user: userId, project: projectId });
         return devices;
     }
 }

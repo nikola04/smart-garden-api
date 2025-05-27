@@ -22,6 +22,11 @@ const schema = new Schema<IDevice>({
         ref: "users",
         required: true
     },
+    project: {
+        type: Schema.Types.ObjectId,
+        ref: "projects",
+        required: true
+    },
     addedAt: { type: Date, default: Date.now }
 });
 

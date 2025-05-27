@@ -1,8 +1,14 @@
 import { Types, Document } from "mongoose";
-import { IDevice } from "./device";
+import { DeviceDocument } from "./device";
+import { IAir, IBattery, ICharger, ILight, ISoil } from "./sensors";
 
 export interface IReport {
-    device: Types.ObjectId | IDevice;
+    device: Types.ObjectId | DeviceDocument;
+    air: IAir;
+    soil: ISoil;
+    light: ILight;
+    battery: IBattery;
+    charger: ICharger;
     reportedAt: Date;
 }
 

@@ -16,8 +16,8 @@ export class APIKeysRepository {
         return keys;
     }
 
-    public async findValidByKey(key: string): Promise<APIKeyDocument|null>{
-        const apiKey = await APIKey.findOne({ key });
+    public async findValidByKey(key: string, { populateDevice = false }: { populateDevice?: boolean }): Promise<APIKeyDocument|null>{
+        const apiKey = await APIKey.findOne({ key }).populate(populateDevice ? "device" : "");
         if(apiKey === null || apiKey.expiresAt === null || apiKey.expiresAt >= new Date())
             return apiKey;
         await APIKey.deleteOne({ _id: apiKey.id });

@@ -1,9 +1,9 @@
 import { Types, Document } from "mongoose";
-import { IDevice } from "./device";
+import { DeviceDocument } from "./device";
 
 export interface IAPIKey {
     key: string;
-    device: Types.ObjectId | IDevice;
+    device: Types.ObjectId | DeviceDocument;
     expiresAt: Date | null;
     createdAt: Date;
 }

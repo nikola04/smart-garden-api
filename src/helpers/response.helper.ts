@@ -34,6 +34,9 @@ const success = ({ res, code = 200, message, data }: IResponse): void => {
     return;
 };
 
+export interface IErrorResponse extends IResponse {
+    retry?: number
+}
 /**
  * Error response helper
  * @function error
@@ -51,10 +54,11 @@ const success = ({ res, code = 200, message, data }: IResponse): void => {
  * @example
  * error({ res, code: 400, message: "Invalid request"});
  */
-const error = ({ res, code = 500, message }: IResponse): void => {
+const error = ({ res, code = 500, message, retry = undefined }: IErrorResponse): void => {
     res.status(code).json({
         success: false,
-        message
+        message,
+        retry
     });
     return;
 };

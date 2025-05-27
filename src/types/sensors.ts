@@ -18,7 +18,7 @@ export interface IBattery{
     voltage: number;
 }
 
-export interface ISolarPanel{
+export interface ICharger{
     voltage: number;
     current: number;
     charging: boolean;
@@ -29,5 +29,5 @@ export interface ISensorReport{
     soil: ISoil;
     light: ILight;
     battery: IBattery;
-    solar_panel: ISolarPanel;
+    charger: ICharger;
 }

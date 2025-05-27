@@ -24,8 +24,9 @@ export const createDevicesController = async (req: AuthRequest, res: Response): 
         if(!req.user)
             return responseHelper.error({ res, code: 401, message: "Unauthorized." });
 
+        const projectId = req.params.id;
         const { name, type } = req.body;
-        const device = await deviceService.createDevice(req.user.id, name, type);
+        const device = await deviceService.createDevice(req.user.id, projectId, name, type);
         const formatedDevice = ({ id: device.id, name: device.name, type: device.type, addedAt: device.addedAt, userId: device.user.toString() });
 
         return responseHelper.success({ res, code: 200, message: "Created devices successfully.", data: { device: formatedDevice } });

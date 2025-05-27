@@ -1,4 +1,4 @@
-import { IAir, IBattery, ILight, ISensorReport, ISoil, ISolarPanel } from "@/types/sensors";
+import { IAir, IBattery, ICharger, ILight, ISensorReport, ISoil } from "@/types/sensors";
 import { isNumber, isBoolean, isObject } from "./validator";
 
 const isAirData = (obj: unknown): obj is IAir => {
@@ -34,7 +34,7 @@ const isBatteryData = (obj: unknown): obj is IBattery => {
     );
 };
 
-const isSolarPanelData = (obj: unknown): obj is ISolarPanel => {
+const isChargerData = (obj: unknown): obj is ICharger => {
     return (
         isObject(obj) &&
         isNumber(obj.voltage) &&
@@ -50,6 +50,6 @@ export const isSensorReport = (obj: unknown): obj is ISensorReport => {
         isSoilData(obj.soil) &&
         isLightData(obj.light) &&
         isBatteryData(obj.battery) &&
-        isSolarPanelData(obj.solar_panel)
+        isChargerData(obj.charger)
     );
 };

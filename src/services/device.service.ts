@@ -15,19 +15,19 @@ export class DeviceService{
     }
 
     public async getDevices(userId: string): Promise<DeviceDocument[]>{
-        const devices = await this.deviceRepository.getDevicesByUserId(userId);
+        const devices = await this.deviceRepository.getUserDevices(userId);
         return devices;
     }
 
-    public async createDevice(userId: string, name: string, type: DeviceType): Promise<DeviceDocument> {
-        const devices = await this.deviceRepository.getDevicesByUserId(userId);
+    public async createDevice(userId: string, projectId: string, name: string, type: DeviceType): Promise<DeviceDocument> {
+        const devices = await this.deviceRepository.getProjectDevices(userId, projectId);
         if(devices.length >= appConfig.maxUserDevices)
             throw new Error("devices limit reached");
 
         if(devices.find((device) => device.name === name))
             throw new Error("name already used");
 
-        const device = await this.deviceRepository.createDevice(userId, name, type);
+        const device = await this.deviceRepository.createDevice(userId, projectId, name, type);
         if(!device)
             throw new Error("device not created");
         return device;
