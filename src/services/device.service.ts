@@ -21,7 +21,7 @@ export class DeviceService{
 
     public async createDevice(userId: string, projectId: string, name: string, type: DeviceType): Promise<DeviceDocument> {
         const devices = await this.deviceRepository.getProjectDevices(userId, projectId);
-        if(devices.length >= appConfig.maxUserDevices)
+        if(devices.length >= appConfig.maxProjectDevices)
             throw new Error("devices limit reached");
 
         if(devices.find((device) => device.name === name))

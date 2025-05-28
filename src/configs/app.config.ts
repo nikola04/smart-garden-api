@@ -1,5 +1,6 @@
 const config = {
-    maxUserDevices: 10,
+    maxUserProjects: 5,
+    maxProjectDevices: 10,
     reportIntervalS: 60, // in seconds
 };
 

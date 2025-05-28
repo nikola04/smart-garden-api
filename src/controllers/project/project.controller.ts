@@ -20,10 +20,34 @@ export const createProjectController = async (req: AuthRequest, res: Response): 
 
         responseHelper.success({ res, message: "Project created successfully.", data: { project: formated } });
     } catch (err) {
+        if(err instanceof Error){
+            if(err.message === "projects limit reached")
+                return responseHelper.error({ res, code: 403, message: "Projects limit reached."});
+            if(err.message === "name already used")
+                return responseHelper.error({ res, code: 409, message: "Project name is already used."});
+        }
         console.error("Error creating project:", err);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };
+
+export const deleteProjectController = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        if(!req.user)
+            return responseHelper.error({ res, code: 401, message: "Unauthorized." });
+
+        const userId = req.user.id;
+        const projectId = req.params.id;
+
+        await projectService.deleteProject(userId, projectId);
+
+        responseHelper.success({ res, message: "Project deleted successfully." });
+    } catch (err) {
+        console.error("Error retrieving projects:", err);
+        responseHelper.error({ res, code: 500, message: "Internal server error." });
+    }
+};
+
 
 export const getProjectsController = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
@@ -42,28 +66,6 @@ export const getProjectsController = async (req: AuthRequest, res: Response): Pr
         }));
 
         responseHelper.success({ res, message: "Projects retrieved successfully.", data: { projects: formated } });
-    } catch (err) {
-        console.error("Error retrieving projects:", err);
-        responseHelper.error({ res, code: 500, message: "Internal server error." });
-    }
-};
-
-export const getProjectDevicesController = async (req: AuthRequest, res: Response): Promise<void> => {
-    try {
-        if(!req.user)
-            return responseHelper.error({ res, code: 401, message: "Unauthorized." });
-
-        const userId = req.user.id;
-        const projects = await projectService.getProjectDevices(userId, req.params.id);
-
-        const formated = projects.map((device) => ({
-            id: device.id,
-            name: device.name,
-            type: device.type,
-            addedAt: device.addedAt,
-        }));
-
-        responseHelper.success({ res, message: "Projects retrieved successfully.", data: { devices: formated } });
     } catch (err) {
         console.error("Error retrieving projects:", err);
         responseHelper.error({ res, code: 500, message: "Internal server error." });

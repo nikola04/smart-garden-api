@@ -17,6 +17,10 @@ export class ProjectRepository {
         const projects = await Project.find({ user: userId });
         return projects;
     }
+    public async deleteProject(userId: string, projectId: string): Promise<boolean> {
+        const deleted = await Project.deleteOne({ _id: projectId, user: userId });
+        return deleted.deletedCount > 0;
+    }
     public async createProject(userId: string, name: string, description?: string): Promise<ProjectDocument> {
         const project = await Project.create({
             name,
