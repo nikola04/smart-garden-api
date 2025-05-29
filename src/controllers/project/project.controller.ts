@@ -43,6 +43,10 @@ export const deleteProjectController = async (req: AuthRequest, res: Response): 
 
         responseHelper.success({ res, message: "Project deleted successfully." });
     } catch (err) {
+        if(err instanceof Error){
+            if(err.message === "project not found")
+                return responseHelper.error({ res, code: 404, message: "Project not found." });
+        }
         console.error("Error retrieving projects:", err);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
