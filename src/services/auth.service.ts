@@ -76,7 +76,7 @@ export class AuthService{
         const user = await this.userRepository.getUserByGoogle(googleUserId);
         if(!user)
             throw new Error("user not found");
-        
+
         return this.loginUser(user);
     }
 
@@ -85,8 +85,8 @@ export class AuthService{
             idToken: token,
         });
         const payload = ticket.getPayload();
-        if(!payload) throw new Error('not verified')
-        const userId = payload['sub'];
+        if(!payload) throw new Error("not verified");
+        const userId = payload["sub"];
         return userId;
     }
 }

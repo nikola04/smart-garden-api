@@ -12,10 +12,10 @@ export const googleCallbackController = async (req: Request, res: Response): Pro
         if(!req.query || !req.query.code || !req.query.state || typeof req.query.state !== "string" || typeof req.query.code !== "string")
             return responseHelper.error({ res, code: 400, message: "Invalid code." });
 
-        const { code, state } = req.query;
+        const { code, _state } = req.query;
 
         // if(state != req.session.state)
-        //     return responseHelper.error({ res, code: 400, message: "Invalid state." }); 
+        //     return responseHelper.error({ res, code: 400, message: "Invalid state." });
 
         const { user, accessToken, refreshToken, csrfToken } = await authService.loginGoogle(code);
         const userFormated = ({ id: user.id, name: user.name, avatar: user.avatar, email: user.email, createdAt: user.createdAt });
@@ -38,12 +38,12 @@ export const googleCallbackController = async (req: Request, res: Response): Pro
 export const googleLoginController = async (req: Request, res: Response): Promise<void> => {
     const scopes = ["openid", "email", "profile"];
     try{
-        const state = crypto.randomBytes(32).toString('hex');
+        const state = crypto.randomBytes(32).toString("hex");
 
         req.session.state = state;
 
         const authorizationUrl = oauth2Client.generateAuthUrl({
-            access_type: 'offline',
+            access_type: "offline",
             scope: scopes,
             include_granted_scopes: true,
             state: state
@@ -55,4 +55,4 @@ export const googleLoginController = async (req: Request, res: Response): Promis
         responseHelper.error({ res, code: 500, message: "Internal server error." });
 
     }
-}
+};

@@ -7,11 +7,11 @@ import db from "./configs/db.config";
 const app = express();
 
 app.use(
-  helmet.crossOriginOpenerPolicy({ policy: "same-origin-allow-popups" }),
-  helmet.crossOriginEmbedderPolicy({ policy: "require-corp" })
+    helmet.crossOriginOpenerPolicy({ policy: "same-origin-allow-popups" }),
+    helmet.crossOriginEmbedderPolicy({ policy: "require-corp" })
 );
 app.use(session({
-    secret: 'keyboard cat',
+    secret: "keyboard cat",
     resave: false,
     saveUninitialized: true,
     cookie: { secure: true }
