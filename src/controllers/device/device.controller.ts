@@ -1,3 +1,4 @@
+import { logger } from "@/configs/logger.config";
 import responseHelper from "@/helpers/response.helper";
 import { AuthRequest } from "@/middlewares/authenticate";
 import { DeviceService } from "@/services/device.service";
@@ -14,7 +15,8 @@ export const getDevicesController = async (req: AuthRequest, res: Response): Pro
         const formatedDevices = devices.map(device => ({ id: device.id, name: device.name, type: device.type, addedAt: device.addedAt, userId: device.user.toString() }));
 
         return responseHelper.success({ res, code: 200, message: "Found devices successfully.", data: { devices: formatedDevices } });
-    }catch(_err){
+    }catch(err){
+        logger.error(`[getDevicesController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };
@@ -39,7 +41,7 @@ export const createDevicesController = async (req: AuthRequest, res: Response): 
             if(err.message === "name already used")
                 return responseHelper.error({ res, code: 409, message: "Device name already used."});
         }
-        console.error(err);
+        logger.error(`[createDevicesController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };
@@ -61,6 +63,7 @@ export const updateDeviceController = async (req: AuthRequest, res: Response): P
             if(err.message === "device not found")
                 return responseHelper.error({ res, code: 404, message: "Device not found." });
         }
+        logger.error(`[updateDeviceController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };
@@ -79,6 +82,7 @@ export const deleteDeviceController = async (req: AuthRequest, res: Response): P
             if(err.message === "device not found")
                 return responseHelper.error({ res, code: 404, message: "Device not found." });
         }
+        logger.error(`[deleteDeviceController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };

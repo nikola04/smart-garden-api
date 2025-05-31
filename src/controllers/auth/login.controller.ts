@@ -1,4 +1,5 @@
 import { authConfig } from "@/configs/auth.config";
+import { logger } from "@/configs/logger.config";
 import responseHelper from "@/helpers/response.helper";
 import { AuthService } from "@/services/auth.service";
 import { Request, Response } from "express";
@@ -24,7 +25,7 @@ export const loginController = async (req: Request, res: Response): Promise<void
             if(err.message === "user not found" || err.message === "invalid password")
                 return responseHelper.error({ res, code: 404, message: "User not found." });
         }
-
+        logger.error(`[loginController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };

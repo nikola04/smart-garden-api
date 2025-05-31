@@ -4,6 +4,7 @@ import { AuthService } from "@/services/auth.service";
 import { Request, Response } from "express";
 import crypto from "crypto";
 import { oauth2Client } from "@/configs/google.config";
+import { logger } from "@/configs/logger.config";
 
 const authService = new AuthService();
 
@@ -38,6 +39,7 @@ export const googleCallbackController = async (req: Request, res: Response): Pro
                 return responseHelper.error({ res, code: 403, message: "Not verified." });
 
         }
+        logger.error(`[googleCallbackController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };
@@ -58,8 +60,7 @@ export const googleLoginController = async (req: Request, res: Response): Promis
 
         return responseHelper.success({ res, message: "OK", data: { url: authorizationUrl }});
     }catch(err){
-        console.log(err);
+        logger.error(`[googleLoginController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
-
     }
 };

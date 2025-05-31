@@ -1,5 +1,6 @@
 import { CronJob } from "cron";
 import { Config, createAuthHandler, generateCredentials } from "easy-token-auth";
+import { logger } from "./logger.config";
 
 export const authConfig: Config = {
     default: { expiry: 420 /* 7 minutes */ },
@@ -11,7 +12,7 @@ export const authConfig: Config = {
 export const authHandler = createAuthHandler(authConfig);
 
 const generateAndSetCredentials = (): void => {
-    console.log("> Generating new credentials...");
+    logger.info("Generating new credentials...");
     const credentials = generateCredentials("ES384");
     authHandler.setCredentials(credentials);
 };

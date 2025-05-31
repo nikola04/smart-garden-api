@@ -1,4 +1,5 @@
 import { authConfig } from "@/configs/auth.config";
+import { logger } from "@/configs/logger.config";
 import responseHelper from "@/helpers/response.helper";
 import { AuthService } from "@/services/auth.service";
 import { ValidatorErrors } from "easy-token-auth";
@@ -33,6 +34,7 @@ export const refreshController = async (req: Request, res: Response): Promise<vo
         if(err === ValidatorErrors.InvalidSecretOrKey || err === ValidatorErrors.TokenNotActive)
             return responseHelper.error({ res, code: 401, message: "Invalid refresh token. Token probably expired." });
 
+        logger.error(`[refreshController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };

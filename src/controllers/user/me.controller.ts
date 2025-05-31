@@ -1,3 +1,4 @@
+import { logger } from "@/configs/logger.config";
 import responseHelper from "@/helpers/response.helper";
 import { AuthRequest } from "@/middlewares/authenticate";
 import { UserService } from "@/services/user.service";
@@ -19,7 +20,7 @@ export const userMeController = async (req: AuthRequest, res: Response): Promise
             if(err.message === "user not found")
                 return responseHelper.error({ res, code: 404, message: "User not found." });
         }
-
+        logger.error(`[userMeController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };

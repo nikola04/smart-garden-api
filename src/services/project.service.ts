@@ -4,6 +4,7 @@ import { ProjectRepository } from "@/repositories/project.repository";
 import { DeviceDocument } from "@/types/device";
 import { ProjectDocument } from "@/types/project";
 import { DeviceService } from "./device.service";
+import { logger } from "@/configs/logger.config";
 
 export class ProjectService{
     private projectRepository: ProjectRepository;
@@ -37,7 +38,7 @@ export class ProjectService{
         const deviceService = new DeviceService();
         await Promise.all(devices.map((device) => {
             return deviceService.deleteDevice(device.id, userId);
-        })).catch(console.error); // log to console if device is not deleted
+        })).catch(logger.error); // log if device is not deleted
     }
 
     public async getProjects(userId: string): Promise<ProjectDocument[]> {

@@ -1,4 +1,5 @@
 import appConfig from "@/configs/app.config";
+import { logger } from "@/configs/logger.config";
 import { APIKeysRepository } from "@/repositories/apikeys.repository";
 import { DeviceRepository } from "@/repositories/device.repository";
 import { APIKeyDocument } from "@/types/apikey";
@@ -46,7 +47,7 @@ export class DeviceService{
             throw new Error("device not found");
 
         this.apiKeyRepository.deleteDeviceAPIKeys(deviceId).catch(err => {
-            console.error(`Failed to delete API keys for device ${deviceId}:`, err);
+            logger.error(`Failed to delete API keys for device ${deviceId}:`, err);
         });
     }
 

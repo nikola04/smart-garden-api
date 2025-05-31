@@ -1,3 +1,4 @@
+import { logger } from "@/configs/logger.config";
 import responseHelper from "@/helpers/response.helper";
 import { AuthRequest } from "@/middlewares/authenticate";
 import { ProjectService } from "@/services/project.service";
@@ -26,7 +27,7 @@ export const createProjectController = async (req: AuthRequest, res: Response): 
             if(err.message === "name already used")
                 return responseHelper.error({ res, code: 409, message: "Project name is already used."});
         }
-        console.error("Error creating project:", err);
+        logger.error(`[createProjectController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };
@@ -47,7 +48,7 @@ export const deleteProjectController = async (req: AuthRequest, res: Response): 
             if(err.message === "project not found")
                 return responseHelper.error({ res, code: 404, message: "Project not found." });
         }
-        console.error("Error retrieving projects:", err);
+        logger.error(`[deleteProjectController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };
@@ -71,7 +72,7 @@ export const getProjectsController = async (req: AuthRequest, res: Response): Pr
 
         responseHelper.success({ res, message: "Projects retrieved successfully.", data: { projects: formated } });
     } catch (err) {
-        console.error("Error retrieving projects:", err);
+        logger.error(`[getProjectsController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };

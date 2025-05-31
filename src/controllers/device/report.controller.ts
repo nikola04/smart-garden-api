@@ -1,3 +1,4 @@
+import { logger } from "@/configs/logger.config";
 import responseHelper from "@/helpers/response.helper";
 import { DeviceRequest } from "@/middlewares/verifykey";
 import { ReportService } from "@/services/report.service";
@@ -22,6 +23,7 @@ export const reportController = async (req: DeviceRequest, res: Response): Promi
             if(err.message.startsWith("report too soon"))
                 return responseHelper.error({ res, code: 429, message: "Please wait before sending another report.", retry: parseInt(err.message.split("#")[1]) });
         }
+        logger.error(`[reportController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };

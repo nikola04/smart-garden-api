@@ -1,3 +1,4 @@
+import { logger } from "@/configs/logger.config";
 import responseHelper from "@/helpers/response.helper";
 import { AuthRequest } from "@/middlewares/authenticate";
 import { DeviceService } from "@/services/device.service";
@@ -23,6 +24,7 @@ export const getKeysController = async (req: AuthRequest, res: Response): Promis
             if(err.message === "not device owner")
                 return responseHelper.error({ res, code: 403, message: "User Device not found." });
         }
+        logger.error(`[getKeysController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };
@@ -48,7 +50,7 @@ export const createKeyController = async (req: AuthRequest, res: Response): Prom
             if(err.message === "failed to create api key")
                 return responseHelper.error({ res, code: 500, message: "Failed to create API Key." });
         }
-        console.log(err);
+        logger.error(`[createKeyController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };
@@ -76,7 +78,7 @@ export const deleteKeyController = async (req: AuthRequest, res: Response): Prom
             if(err.message === "key not found")
                 return responseHelper.error({ res, code: 404, message: "Key not found." });
         }
-        console.log(err);
+        logger.error(`[deleteKeyController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };

@@ -1,3 +1,4 @@
+import { logger } from "@/configs/logger.config";
 import responseHelper from "@/helpers/response.helper";
 import { AuthRequest } from "@/middlewares/authenticate";
 import { ProjectService } from "@/services/project.service";
@@ -22,7 +23,7 @@ export const getProjectDevicesController = async (req: AuthRequest, res: Respons
 
         responseHelper.success({ res, message: "Project devices retrieved successfully.", data: { devices: formated } });
     } catch (err) {
-        console.error("Error retrieving projects:", err);
+        logger.error(`[getProjectDevicesController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };
