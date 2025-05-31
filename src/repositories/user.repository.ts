@@ -17,4 +17,8 @@ export class UserRepository {
         const user = await User.findOne({ email });
         return user;
     }
+    public async getUserByGoogle(googleId: string): Promise<UserDocument|null> {
+        const user = await User.findOne({ googleId });
+        return user;
+    }
 }
