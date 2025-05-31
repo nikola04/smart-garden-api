@@ -69,8 +69,8 @@ export class AuthService{
     }
 
     public async loginGoogle(code: string): Promise<{ user: UserDocument, accessToken: string, refreshToken: string, csrfToken: string }> {
-        const { tokens } = await oauth2Client.getToken(code);
-        if(!tokens.id_token)
+        const { tokens } = await oauth2Client.getToken(code).catch(_e => ({ tokens: null }));
+        if(!tokens || !tokens.id_token)
             throw new Error("token not retrieved");
         const googleUserId = await this.verifyGoogleToken(tokens.id_token);
         const user = await this.userRepository.getUserByGoogle(googleUserId);
@@ -83,7 +83,9 @@ export class AuthService{
     private async verifyGoogleToken(token: string): Promise<string>{
         const ticket = await this.googleClient.verifyIdToken({
             idToken: token,
-        });
+        }).catch(_e => null);
+        if(!ticket)
+            throw new Error("error verifying");
         const payload = ticket.getPayload();
         if(!payload) throw new Error("not verified");
         const userId = payload["sub"];

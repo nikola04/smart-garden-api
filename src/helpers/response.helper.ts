@@ -63,16 +63,17 @@ const error = ({ res, code = 500, message, retry = undefined }: IErrorResponse):
     return;
 };
 
-export const cookie = ({ res, name, value, maxAge, path = "/" }: {
+export const cookie = ({ res, name, value, maxAge, path = "/", httpOnly = true }: {
     res: Response,
     name: string,
     value: string,
     maxAge: number,
-    path?: string
+    path?: string,
+    httpOnly?: boolean
 }): void => {
     res.cookie(name, value, {
         maxAge,
-        httpOnly: true,
+        httpOnly,
         sameSite: "strict",
         secure: process.env.NODE_ENV === "production",
         domain: process.env.NODE_ENV === "production" ? `.${process.env.DOMAIN}` : undefined,

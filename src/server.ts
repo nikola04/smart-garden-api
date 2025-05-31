@@ -1,20 +1,17 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import session from "express-session";
-import helmet from "helmet";
+// import helmet from "helmet";
 import apiRouter from "./routes";
 import db from "./configs/db.config";
 const app = express();
 
-app.use(
-    helmet.crossOriginOpenerPolicy({ policy: "same-origin-allow-popups" }),
-    helmet.crossOriginEmbedderPolicy({ policy: "require-corp" })
-);
+app.set('trust proxy', 1);
 app.use(session({
-    secret: "keyboard cat",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true }
+  secret: process.env.SESSION_SECRET!,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true }
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
