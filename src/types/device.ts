@@ -1,6 +1,6 @@
 import { Document, Types } from "mongoose";
-import { UserDocument } from "./user";
-import { ProjectDocument } from "./project";
+import { IUser } from "./user";
+import { IProject } from "./project";
 
 export enum DeviceType {
     ESP32 = "ESP32",
@@ -11,8 +11,8 @@ export interface IDevice {
     id: string;
     name?: string;
     type: DeviceType;
-    user: Types.ObjectId | UserDocument;
-    project: Types.ObjectId | ProjectDocument;
+    user: Types.ObjectId | IUser;
+    project: Types.ObjectId | IProject;
     addedAt: Date;
 }
 

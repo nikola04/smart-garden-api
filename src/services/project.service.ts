@@ -1,8 +1,8 @@
 import appConfig from "@/configs/app.config";
 import { DeviceRepository } from "@/repositories/device.repository";
 import { ProjectRepository } from "@/repositories/project.repository";
-import { DeviceDocument } from "@/types/device";
-import { ProjectDocument } from "@/types/project";
+import { IDevice } from "@/types/device";
+import { IProject } from "@/types/project";
 import { DeviceService } from "./device.service";
 import { logger } from "@/configs/logger.config";
 
@@ -13,7 +13,7 @@ export class ProjectService{
         this.projectRepository = new ProjectRepository();
         this.deviceRepository = new DeviceRepository();
     }
-    public async createProject(userId: string, name: string, description?: string): Promise<ProjectDocument> {
+    public async createProject(userId: string, name: string, description?: string): Promise<IProject> {
         const desc = description && typeof description === "string" && description.trim().length > 0 ? description.trim() : undefined;
         const projects = await this.getProjects(userId);
 
@@ -41,14 +41,14 @@ export class ProjectService{
         })).catch(logger.error); // log if device is not deleted
     }
 
-    public async getProjects(userId: string): Promise<ProjectDocument[]> {
+    public async getProjects(userId: string): Promise<IProject[]> {
         const projects = await this.projectRepository.getUserProjects(userId);
         if(!projects)
             throw new Error("projects not found");
         return projects;
     }
 
-    public async getProjectDevices(userId: string, projectId: string): Promise<DeviceDocument[]> {
+    public async getProjectDevices(userId: string, projectId: string): Promise<IDevice[]> {
         const devices = await this.deviceRepository.getProjectDevices(userId, projectId);
         return devices;
     }

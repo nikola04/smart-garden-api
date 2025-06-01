@@ -1,9 +1,9 @@
 import { Document, Types } from "mongoose";
-import { UserDocument } from "./user";
+import { IUser } from "./user";
 
 export interface IToken {
     token: string;
-    user: Types.ObjectId | UserDocument;
+    user: Types.ObjectId | IUser;
     createdAt: Date;
     refreshedAt: Date;
     expiresAt: Date;

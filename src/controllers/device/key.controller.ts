@@ -1,4 +1,5 @@
 import { logger } from "@/configs/logger.config";
+import { formatIAPIKey } from "@/formatters/apikey.formatter";
 import responseHelper from "@/helpers/response.helper";
 import { AuthRequest } from "@/middlewares/authenticate";
 import { DeviceService } from "@/services/device.service";
@@ -14,7 +15,7 @@ export const getKeysController = async (req: AuthRequest, res: Response): Promis
 
         const deviceId = req.params.id;
         const keys = await deviceService.getAPIKeys(deviceId, req.user.id);
-        const formated = keys.map(key => ({ id: key.id, expiresAt: key.expiresAt, createdAt: key.createdAt }));
+        const formated = keys.map(formatIAPIKey);
 
         return responseHelper.success({ res, code: 200, message: "API key found successfully.", data: { keys: formated } });
     }catch(err){
@@ -36,7 +37,7 @@ export const createKeyController = async (req: AuthRequest, res: Response): Prom
 
         const deviceId = req.params.id;
         const { rawKey, apiKey } = await deviceService.createAPIKey(deviceId, req.user.id);
-        const formatedKey = ({ id: apiKey.id, expiresAt: apiKey.expiresAt, createdAt: apiKey.createdAt });
+        const formatedKey = formatIAPIKey(apiKey);
 
         return responseHelper.success({ res, code: 200, message: "API key created successfully.", data: { raw: rawKey, key: formatedKey } });
     }catch(err){

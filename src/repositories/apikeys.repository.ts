@@ -1,5 +1,5 @@
 import APIKey from "@/models/apikey.model";
-import { APIKeyDocument } from "@/types/apikey";
+import { IAPIKey } from "@/types/apikey";
 
 export class APIKeysRepository {
     private static instance: APIKeysRepository;
@@ -10,13 +10,13 @@ export class APIKeysRepository {
         APIKeysRepository.instance = this;
     }
 
-    public async findValidByDeviceId(deviceId: string): Promise<APIKeyDocument[]>{
+    public async findValidByDeviceId(deviceId: string): Promise<IAPIKey[]>{
         await APIKey.deleteMany({ device: deviceId, expiresAt: { $ne: null, $lt: new Date() } });
         const keys = await APIKey.find({ device: deviceId });
         return keys;
     }
 
-    public async findValidByKey(key: string, { populateDevice = false }: { populateDevice?: boolean }): Promise<APIKeyDocument|null>{
+    public async findValidByKey(key: string, { populateDevice = false }: { populateDevice?: boolean }): Promise<IAPIKey|null>{
         const apiKey = await APIKey.findOne({ key }).populate(populateDevice ? "device" : "");
         if(apiKey === null || apiKey.expiresAt === null || apiKey.expiresAt >= new Date())
             return apiKey;
@@ -24,7 +24,7 @@ export class APIKeysRepository {
         return null;
     }
 
-    public async createAPIKey(deviceId: string, key: string, expiresAt?: Date): Promise<APIKeyDocument|null> {
+    public async createAPIKey(deviceId: string, key: string, expiresAt?: Date): Promise<IAPIKey|null> {
         try{
             const apiKey = await APIKey.create({ device: deviceId, key, expiresAt });
             return apiKey;

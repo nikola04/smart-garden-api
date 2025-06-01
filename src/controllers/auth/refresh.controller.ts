@@ -1,5 +1,6 @@
 import { authConfig } from "@/configs/auth.config";
 import { logger } from "@/configs/logger.config";
+import { formatIUser } from "@/formatters/user.formatter";
 import responseHelper from "@/helpers/response.helper";
 import { AuthService } from "@/services/auth.service";
 import { ValidatorErrors } from "easy-token-auth";
@@ -13,7 +14,7 @@ export const refreshController = async (req: Request, res: Response): Promise<vo
             return responseHelper.error({ res, code: 400, message: "No refresh token cookie" });
         const oldRefreshToken = req.cookies.refresh_token;
         const { user, accessToken, refreshToken, csrfToken } = await authService.refresh(oldRefreshToken);
-        const userFormated = ({ id: user.id, name: user.name, avatar: user.avatar, email: user.email, createdAt: user.createdAt });
+        const userFormated = formatIUser(user);
 
         const maxAge = authConfig.refresh_token.expiry * 1000;
         responseHelper.cookie({ res, name: "refresh_token", value: refreshToken, maxAge, path: "/api/auth" });

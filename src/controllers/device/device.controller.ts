@@ -1,4 +1,5 @@
 import { logger } from "@/configs/logger.config";
+import { formatIDevice } from "@/formatters/device.formatter";
 import responseHelper from "@/helpers/response.helper";
 import { AuthRequest } from "@/middlewares/authenticate";
 import { DeviceService } from "@/services/device.service";
@@ -12,7 +13,7 @@ export const getDevicesController = async (req: AuthRequest, res: Response): Pro
             return responseHelper.error({ res, code: 401, message: "Unauthorized." });
 
         const devices = await deviceService.getDevices(req.user.id);
-        const formatedDevices = devices.map(device => ({ id: device.id, name: device.name, type: device.type, addedAt: device.addedAt, userId: device.user.toString() }));
+        const formatedDevices = devices.map(formatIDevice);
 
         return responseHelper.success({ res, code: 200, message: "Found devices successfully.", data: { devices: formatedDevices } });
     }catch(err){
@@ -29,7 +30,7 @@ export const createDevicesController = async (req: AuthRequest, res: Response): 
         const projectId = req.params.id;
         const { name, type } = req.body;
         const device = await deviceService.createDevice(req.user.id, projectId, name, type);
-        const formatedDevice = ({ id: device.id, name: device.name, type: device.type, addedAt: device.addedAt, userId: device.user.toString() });
+        const formatedDevice = formatIDevice(device);
 
         return responseHelper.success({ res, code: 200, message: "Created devices successfully.", data: { device: formatedDevice } });
     }catch(err){
@@ -55,7 +56,7 @@ export const updateDeviceController = async (req: AuthRequest, res: Response): P
         const deviceId = req.params.id;
 
         const device = await deviceService.updateDevice(deviceId, req.user.id, name, type);
-        const formatedDevice = ({ id: device.id, name: device.name, type: device.type, addedAt: device.addedAt, userId: device.user.toString() });
+        const formatedDevice = formatIDevice(device);
 
         return responseHelper.success({ res, code: 200, message: "Updated device successfully.", data: { device: formatedDevice } });
     }catch(err){

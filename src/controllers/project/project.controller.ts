@@ -1,4 +1,5 @@
 import { logger } from "@/configs/logger.config";
+import { formatIProject } from "@/formatters/project.formatter";
 import responseHelper from "@/helpers/response.helper";
 import { AuthRequest } from "@/middlewares/authenticate";
 import { ProjectService } from "@/services/project.service";
@@ -17,7 +18,7 @@ export const createProjectController = async (req: AuthRequest, res: Response): 
         const { name, description } = req.body;
 
         const project = await projectService.createProject(userId, name, description);
-        const formated = ({ id: project.id, name: project.name, description: project.description, createdAt: project.createdAt, updatedAt: project.updatedAt });
+        const formated = formatIProject(project);
 
         responseHelper.success({ res, message: "Project created successfully.", data: { project: formated } });
     } catch (err) {
@@ -62,13 +63,7 @@ export const getProjectsController = async (req: AuthRequest, res: Response): Pr
         const userId = req.user.id;
         const projects = await projectService.getProjects(userId);
 
-        const formated = projects.map((project) => ({
-            id: project.id,
-            name: project.name,
-            description: project.description,
-            createdAt: project.createdAt,
-            updatedAt: project.updatedAt
-        }));
+        const formated = projects.map(formatIProject);
 
         responseHelper.success({ res, message: "Projects retrieved successfully.", data: { projects: formated } });
     } catch (err) {

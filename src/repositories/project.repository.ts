@@ -1,5 +1,5 @@
 import Project from "@/models/project.model";
-import { ProjectDocument } from "@/types/project";
+import { IProject } from "@/types/project";
 
 export class ProjectRepository {
     private static instance: ProjectRepository;
@@ -9,11 +9,11 @@ export class ProjectRepository {
         }
         ProjectRepository.instance = this;
     }
-    public async getProjectById(projectId: string): Promise<ProjectDocument|null> {
+    public async getProjectById(projectId: string): Promise<IProject|null> {
         const project = await Project.findById(projectId);
         return project;
     }
-    public async getUserProjects(userId: string): Promise<ProjectDocument[]> {
+    public async getUserProjects(userId: string): Promise<IProject[]> {
         const projects = await Project.find({ user: userId });
         return projects;
     }
@@ -21,7 +21,7 @@ export class ProjectRepository {
         const deleted = await Project.deleteOne({ _id: projectId, user: userId });
         return deleted.deletedCount > 0;
     }
-    public async createProject(userId: string, name: string, description?: string): Promise<ProjectDocument> {
+    public async createProject(userId: string, name: string, description?: string): Promise<IProject> {
         const project = await Project.create({
             name,
             description,

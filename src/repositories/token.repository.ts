@@ -1,6 +1,6 @@
 import { authConfig } from "@/configs/auth.config";
 import Token from "@/models/token.model";
-import { TokenDocument } from "@/types/token";
+import { IToken } from "@/types/token";
 
 export class TokenRepository {
     private static instance: TokenRepository;
@@ -11,7 +11,7 @@ export class TokenRepository {
         TokenRepository.instance = this;
     }
 
-    public async getToken(token: string, populate: boolean = false): Promise<TokenDocument|null> {
+    public async getToken(token: string, populate: boolean = false): Promise<IToken|null> {
         const document = await Token.findOne({ token }).populate(populate ? "user" : "");
         return document;
     }

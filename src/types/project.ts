@@ -1,11 +1,11 @@
-import { Document } from "mongoose";
-import { UserDocument } from "./user";
+import { Document, Types } from "mongoose";
+import { IUser } from "./user";
 
 export interface IProject {
     id: string;
     name: string;
     description?: string;
-    user: string | UserDocument;
+    user: Types.ObjectId | IUser;
     updatedAt: Date;
     createdAt: Date;
 }

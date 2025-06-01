@@ -1,4 +1,4 @@
-import { IUser, UserDocument } from "@/types/user";
+import { IUser } from "@/types/user";
 import { UserRepository } from "../repositories/user.repository";
 import { authHandler } from "@/configs/auth.config";
 import bcrypt from "bcrypt";
@@ -38,7 +38,7 @@ export class AuthService{
         return ({ user, accessToken, refreshToken, csrfToken });
     }
 
-    private async loginUser(user: UserDocument): Promise<{ user: UserDocument, accessToken: string, refreshToken: string, csrfToken: string }> {
+    private async loginUser(user: IUser): Promise<{ user: IUser, accessToken: string, refreshToken: string, csrfToken: string }> {
         const accessToken = authHandler.generateAccessToken({ id: user.id });
         const { jwt: refreshToken, hashedToken } = authHandler.generateRefreshToken();
         const csrfToken = crypto.randomBytes(64).toString("hex");
@@ -54,7 +54,7 @@ export class AuthService{
      * @param password - User password
      * @returns Promise User
      */
-    public async login(email: string, password: string): Promise<{ user: UserDocument, accessToken: string, refreshToken: string, csrfToken: string }> {
+    public async login(email: string, password: string): Promise<{ user: IUser, accessToken: string, refreshToken: string, csrfToken: string }> {
         const user = await this.userRepository.getUserByEmail(email);
         if(!user)
             throw new Error("user not found");
@@ -68,7 +68,7 @@ export class AuthService{
         return bcrypt.compareSync(password, hashedPassword);
     }
 
-    public async loginGoogle(code: string): Promise<{ user: UserDocument, accessToken: string, refreshToken: string, csrfToken: string }> {
+    public async loginGoogle(code: string): Promise<{ user: IUser, accessToken: string, refreshToken: string, csrfToken: string }> {
         const { tokens } = await oauth2Client.getToken(code).catch(_e => ({ tokens: null }));
         if(!tokens || !tokens.id_token)
             throw new Error("token not retrieved");

@@ -1,20 +1,19 @@
 import { authConfig } from "@/configs/auth.config";
 import { logger } from "@/configs/logger.config";
-import { formatIUser } from "@/formatters/user.formatter";
 import responseHelper from "@/helpers/response.helper";
 import { AuthService } from "@/services/auth.service";
 import { Request, Response } from "express";
 
 const authService = new AuthService();
 
-export const loginController = async (req: Request, res: Response): Promise<void> => {
+export const registerController = async (req: Request, res: Response): Promise<void> => {
     try{
-        if(!req.body || !req.body.email || !req.body.password)
+        if(!req.body || !req.body.name || !req.body.email || !req.body.password)
             return responseHelper.error({ res, code: 400, message: "Invalid request body." });
 
         const { email, password } = req.body;
         const { user, accessToken, refreshToken, csrfToken } = await authService.login(email, password);
-        const userFormated = formatIUser(user);
+        const userFormated = ({ id: user.id, name: user.name, avatar: user.avatar, email: user.email, createdAt: user.createdAt });
 
         const maxAge = authConfig.refresh_token.expiry * 1000;
         responseHelper.cookie({ res, name: "refresh_token", value: refreshToken, maxAge, path: "/api/auth" });

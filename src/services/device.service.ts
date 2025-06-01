@@ -2,8 +2,8 @@ import appConfig from "@/configs/app.config";
 import { logger } from "@/configs/logger.config";
 import { APIKeysRepository } from "@/repositories/apikeys.repository";
 import { DeviceRepository } from "@/repositories/device.repository";
-import { APIKeyDocument } from "@/types/apikey";
-import { DeviceDocument, DeviceType } from "@/types/device";
+import { IAPIKey } from "@/types/apikey";
+import { DeviceType, IDevice } from "@/types/device";
 import { hashKey } from "@/utils/apikey";
 import { randomBytes } from "crypto";
 
@@ -15,12 +15,12 @@ export class DeviceService{
         this.apiKeyRepository = new APIKeysRepository();
     }
 
-    public async getDevices(userId: string): Promise<DeviceDocument[]>{
+    public async getDevices(userId: string): Promise<IDevice[]>{
         const devices = await this.deviceRepository.getUserDevices(userId);
         return devices;
     }
 
-    public async createDevice(userId: string, projectId: string, name: string, type: DeviceType): Promise<DeviceDocument> {
+    public async createDevice(userId: string, projectId: string, name: string, type: DeviceType): Promise<IDevice> {
         const devices = await this.deviceRepository.getProjectDevices(userId, projectId);
         if(devices.length >= appConfig.maxProjectDevices)
             throw new Error("devices limit reached");
@@ -34,7 +34,7 @@ export class DeviceService{
         return device;
     }
 
-    public async updateDevice(deviceId: string, userId: string, name: string, type: DeviceType): Promise<DeviceDocument> {
+    public async updateDevice(deviceId: string, userId: string, name: string, type: DeviceType): Promise<IDevice> {
         const device = await this.deviceRepository.updateDevice(deviceId, userId, name, type);
         if(!device)
             throw new Error("device not found");
@@ -51,7 +51,7 @@ export class DeviceService{
         });
     }
 
-    public async getAPIKeys(deviceId: string, userId: string): Promise<APIKeyDocument[]>{
+    public async getAPIKeys(deviceId: string, userId: string): Promise<IAPIKey[]>{
         const device = await this.deviceRepository.getDeviceById(deviceId);
         if(!device)
             throw new Error("device not found");
@@ -63,7 +63,7 @@ export class DeviceService{
         return key;
     }
 
-    public async createAPIKey(deviceId: string, userId: string): Promise<{ rawKey: string, apiKey: APIKeyDocument }>{
+    public async createAPIKey(deviceId: string, userId: string): Promise<{ rawKey: string, apiKey: IAPIKey }>{
         const device = await this.deviceRepository.getDeviceById(deviceId);
         if(!device)
             throw new Error("device not found");

@@ -1,4 +1,5 @@
 import { logger } from "@/configs/logger.config";
+import { formatIDevice } from "@/formatters/device.formatter";
 import responseHelper from "@/helpers/response.helper";
 import { AuthRequest } from "@/middlewares/authenticate";
 import { ProjectService } from "@/services/project.service";
@@ -12,14 +13,9 @@ export const getProjectDevicesController = async (req: AuthRequest, res: Respons
             return responseHelper.error({ res, code: 401, message: "Unauthorized." });
 
         const userId = req.user.id;
-        const projects = await projectService.getProjectDevices(userId, req.params.id);
+        const devices = await projectService.getProjectDevices(userId, req.params.id);
 
-        const formated = projects.map((device) => ({
-            id: device.id,
-            name: device.name,
-            type: device.type,
-            addedAt: device.addedAt,
-        }));
+        const formated = devices.map(formatIDevice);
 
         responseHelper.success({ res, message: "Project devices retrieved successfully.", data: { devices: formated } });
     } catch (err) {

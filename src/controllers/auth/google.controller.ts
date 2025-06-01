@@ -5,6 +5,7 @@ import { Request, Response } from "express";
 import crypto from "crypto";
 import { oauth2Client } from "@/configs/google.config";
 import { logger } from "@/configs/logger.config";
+import { formatIUser } from "@/formatters/user.formatter";
 
 const authService = new AuthService();
 
@@ -15,11 +16,11 @@ export const googleCallbackController = async (req: Request, res: Response): Pro
 
         const { code, state } = req.query;
 
-        if(state != req.session.state)
+        if(state !== req.session.state)
             return responseHelper.error({ res, code: 400, message: "Invalid state." });
 
         const { user, accessToken, refreshToken, csrfToken } = await authService.loginGoogle(code);
-        const userFormated = ({ id: user.id, name: user.name, avatar: user.avatar, email: user.email, createdAt: user.createdAt });
+        const userFormated = formatIUser(user);
 
         const maxAge = authConfig.refresh_token.expiry * 1000;
         responseHelper.cookie({ res, name: "refresh_token", value: refreshToken, maxAge, path: "/api/auth" });

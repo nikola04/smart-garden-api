@@ -1,5 +1,5 @@
 import { ReportRepository } from "@/repositories/reports.repository";
-import { ReportDocument } from "@/types/report";
+import { IReport } from "@/types/report";
 import { ISensorReport } from "@/types/sensors";
 import appConfig from "@/configs/app.config";
 
@@ -9,7 +9,7 @@ export class ReportService{
         this.reportRepository = new ReportRepository();
     }
 
-    public async saveReport(deviceId: string, projectId: string, report: ISensorReport): Promise<ReportDocument> {
+    public async saveReport(deviceId: string, projectId: string, report: ISensorReport): Promise<IReport> {
         const lastReport = await this.reportRepository.getLastReport(deviceId);
         if (lastReport){
             const timeDiff = appConfig.reportIntervalS * 1000 - (Date.now() - lastReport.reportedAt.getTime());
