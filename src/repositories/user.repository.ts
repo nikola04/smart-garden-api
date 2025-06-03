@@ -9,6 +9,10 @@ export class UserRepository {
         }
         UserRepository.instance = this;
     }
+    public async registerUser(name: string, email: string, password: string): Promise<IUser> {
+        const user = await User.create({ name, email, password });
+        return user;
+    }
     public async getUserById(userId: string): Promise<IUser|null> {
         const user = await User.findById(userId);
         return user;

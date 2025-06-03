@@ -8,24 +8,22 @@ const authService = new AuthService();
 
 export const registerController = async (req: Request, res: Response): Promise<void> => {
     try{
-        if(!req.body || !req.body.name || !req.body.email || !req.body.password)
-            return responseHelper.error({ res, code: 400, message: "Invalid request body." });
+        const { name, email, password } = req.body as { name: string, email: string, password: string };
 
-        const { email, password } = req.body;
-        const { user, accessToken, refreshToken, csrfToken } = await authService.login(email, password);
+        const { user, accessToken, refreshToken, csrfToken } = await authService.register(name, email, password);
         const userFormated = ({ id: user.id, name: user.name, avatar: user.avatar, email: user.email, createdAt: user.createdAt });
 
         const maxAge = authConfig.refresh_token.expiry * 1000;
         responseHelper.cookie({ res, name: "refresh_token", value: refreshToken, maxAge, path: "/api/auth" });
         responseHelper.cookie({ res, name: "csrf_token", value: csrfToken, maxAge });
 
-        responseHelper.success({ res, message: "Login successful.", data: { user: userFormated, accessToken, csrfToken } });
+        responseHelper.success({ res, message: "Register successful.", data: { user: userFormated, accessToken, csrfToken } });
     }catch(err){
         if(err instanceof Error){
-            if(err.message === "user not found" || err.message === "invalid password")
-                return responseHelper.error({ res, code: 404, message: "User not found." });
+            if(err.message === "email already registered")
+                return responseHelper.error({ res, code: 403, message: "Email already registered." });
         }
-        logger.error(`[loginController] ${err}`);
+        logger.error(`[registerController] ${err}`);
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };

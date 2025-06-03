@@ -15,9 +15,9 @@ const schema = new Schema<IUser>({
     },
     googleId: {
         type: String,
-        unique: true,
-        sparse: true,
         default: null,
+        unique: true,
+        sparse: true
     },
     name: {
         type: String,

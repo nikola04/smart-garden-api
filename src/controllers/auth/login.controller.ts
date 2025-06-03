@@ -9,10 +9,8 @@ const authService = new AuthService();
 
 export const loginController = async (req: Request, res: Response): Promise<void> => {
     try{
-        if(!req.body || !req.body.email || !req.body.password)
-            return responseHelper.error({ res, code: 400, message: "Invalid request body." });
+        const { email, password } = req.body as { email: string, password: string };
 
-        const { email, password } = req.body;
         const { user, accessToken, refreshToken, csrfToken } = await authService.login(email, password);
         const userFormated = formatIUser(user);
 

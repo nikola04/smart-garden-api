@@ -18,7 +18,7 @@ const generateAndSetCredentials = (): void => {
 };
 
 CronJob.from({
-    cronTime: "0 0 */7 * *",
+    cronTime: "0 0 * * 1", // every monday
     onTick: generateAndSetCredentials,
     start: true,
     timeZone: "America/Los_Angeles"
