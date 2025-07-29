@@ -4,11 +4,12 @@
 This backend service collects, stores, and serves sensor data from multiple microcontroller devices (e.g., ESP32). It supports device management, API key authentication, and provides data analytics endpoints.
 
 ## Features
+- User account with email and third-party login
 - Manage multiple projects and devices per user
 - Secure API key generation and validation for devices
 - Store sensor readings: temperature, soil moisture, light, battery status, charging state
-- Query historical data with aggregation (hourly, daily, monthly averages)
-- Export data in CSV/JSON formats
+- Query historical data with aggregation (hourly, daily, monthly averages) ***soon...***
+- Export data in CSV/JSON formats ***soon...***
 - User and project settings management
 
 ## Technology Stack
