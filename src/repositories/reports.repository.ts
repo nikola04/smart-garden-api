@@ -1,6 +1,7 @@
 import Report from "@/models/report.model";
 import { IReport } from "@/types/report";
 import { IAir, IBattery, ICharger, ILight, ISoil } from "@/types/sensors";
+import { Types } from "mongoose";
 
 export class ReportRepository {
     private static instance: ReportRepository;
@@ -9,6 +10,23 @@ export class ReportRepository {
             return ReportRepository.instance;
         }
         ReportRepository.instance = this;
+    }
+
+    public async getActiveDevicesIDs(projectId: string): Promise<string[]>{
+        const activeDelay = new Date(Date.now() - 45 * 60 * 1000);
+
+        const devices = await Report.aggregate([
+            {
+                $match: {
+                    reportedAt: { $gt: activeDelay },
+                    project: new Types.ObjectId(projectId)
+                }
+            },
+            { $group: { _id: "$device" } }
+        ]);
+
+        const ids = devices.map(device => device._id.toString());
+        return ids.filter((id, ind) => ids.indexOf(id) == ind);
     }
 
     public async getAirReport(projectId: string, { last }: {

@@ -31,11 +31,11 @@ export class DeviceRepository {
         return deleted.deletedCount > 0;
     }
     public async getUserDevices(userId: string): Promise<IDevice[]>{
-        const devices = await Device.find({ user: userId });
-        return devices;
+        const devices = await Device.find({ user: userId }).lean();
+        return devices.map(device => ({ ...device, id: device._id.toString() }));
     }
     public async getProjectDevices(userId: string, projectId: string): Promise<IDevice[]> {
-        const devices = await Device.find({ user: userId, project: projectId });
-        return devices;
+        const devices = await Device.find({ user: userId, project: projectId }).lean();
+        return devices.map(device => ({ ...device, id: device._id.toString() }));
     }
 }

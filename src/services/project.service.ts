@@ -5,13 +5,16 @@ import { IDevice } from "@/types/device";
 import { IProject } from "@/types/project";
 import { DeviceService } from "./device.service";
 import { logger } from "@/configs/logger.config";
+import { ReportRepository } from "@/repositories/reports.repository";
 
 export class ProjectService{
     private projectRepository: ProjectRepository;
     private deviceRepository: DeviceRepository;
+    private reportRepository: ReportRepository;
     constructor(){
         this.projectRepository = new ProjectRepository();
         this.deviceRepository = new DeviceRepository();
+        this.reportRepository = new ReportRepository();
     }
     public async createProject(userId: string, name: string, description?: string): Promise<IProject> {
         const desc = description && typeof description === "string" && description.trim().length > 0 ? description.trim() : undefined;
@@ -55,9 +58,9 @@ export class ProjectService{
         return project;
     }
 
-
     public async getProjectDevices(userId: string, projectId: string): Promise<IDevice[]> {
         const devices = await this.deviceRepository.getProjectDevices(userId, projectId);
-        return devices;
+        const activeDevicesIds = await this.reportRepository.getActiveDevicesIDs(projectId);
+        return devices.map(device => ({ ...device, isActive: activeDevicesIds.includes(device.id) }));
     }
 }

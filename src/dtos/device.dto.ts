@@ -5,5 +5,6 @@ export interface IDeviceDTO {
     name?: string;
     type: DeviceType;
     addedAt: Date;
-    userId: string
+    userId: string;
+    isActive?: boolean;
 }

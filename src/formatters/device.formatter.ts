@@ -7,6 +7,7 @@ export const formatIDevice = (device: IDevice): IDeviceDTO => {
         id: device.id,
         name: device.name,
         type: device.type,
+        isActive: device.isActive,
         addedAt: device.addedAt,
         userId
     });
