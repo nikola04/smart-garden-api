@@ -48,6 +48,14 @@ export class ProjectService{
         return projects;
     }
 
+    public async getProject(userId: string, projectId: string): Promise<IProject> {
+        const project = await this.projectRepository.getUserProjectById(userId, projectId);
+        if(!project)
+            throw new Error("project not found");
+        return project;
+    }
+
+
     public async getProjectDevices(userId: string, projectId: string): Promise<IDevice[]> {
         const devices = await this.deviceRepository.getProjectDevices(userId, projectId);
         return devices;

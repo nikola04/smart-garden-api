@@ -1,12 +1,18 @@
 import { ReportRepository } from "@/repositories/reports.repository";
 import { IReport } from "@/types/report";
-import { ISensorReport } from "@/types/sensors";
+import { IAir, ISensorReport } from "@/types/sensors";
 import appConfig from "@/configs/app.config";
 
 export class ReportService{
     private reportRepository: ReportRepository;
     constructor(){
         this.reportRepository = new ReportRepository();
+    }
+
+    public async getLastAirReports(projectId: string, { last = 30 }:{
+        last: number
+    }): Promise<IAir[]> {
+        return this.reportRepository.getAirReport(projectId, { last });
     }
 
     public async saveReport(deviceId: string, projectId: string, report: ISensorReport): Promise<IReport> {

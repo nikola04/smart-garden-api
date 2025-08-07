@@ -9,8 +9,8 @@ export class ProjectRepository {
         }
         ProjectRepository.instance = this;
     }
-    public async getProjectById(projectId: string): Promise<IProject|null> {
-        const project = await Project.findById(projectId);
+    public async getUserProjectById(userId: string, projectId: string): Promise<IProject|null> {
+        const project = await Project.findOne({ user: userId, _id: projectId });
         return project;
     }
     public async getUserProjects(userId: string): Promise<IProject[]> {

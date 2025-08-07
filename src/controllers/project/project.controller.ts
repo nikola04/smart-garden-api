@@ -71,3 +71,23 @@ export const getProjectsController = async (req: AuthRequest, res: Response): Pr
         responseHelper.error({ res, code: 500, message: "Internal server error." });
     }
 };
+
+
+export const getProjectController = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        if(!req.user)
+            return responseHelper.error({ res, code: 401, message: "Unauthorized." });
+
+        const userId = req.user.id;
+        const projectId = req.params.id;
+
+        const project = await projectService.getProject(userId, projectId);
+
+        const formated = formatIProject(project);
+
+        responseHelper.success({ res, message: "Projects retrieved successfully.", data: { project: formated } });
+    } catch (err) {
+        logger.error(`[getProjectsController] ${err}`);
+        responseHelper.error({ res, code: 500, message: "Internal server error." });
+    }
+};

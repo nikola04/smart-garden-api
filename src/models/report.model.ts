@@ -7,6 +7,11 @@ const schema = new Schema<IReport>({
         ref: "devices",
         required: true
     },
+    project: {
+        type: Types.ObjectId,
+        ref: "projects",
+        required: true
+    },
     air: {
         temperature: { type: Number, required: true },
         humidity: { type: Number, required: true }

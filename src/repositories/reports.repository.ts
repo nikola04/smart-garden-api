@@ -10,6 +10,14 @@ export class ReportRepository {
         }
         ReportRepository.instance = this;
     }
+
+    public async getAirReport(projectId: string, { last }: {
+        last: number
+    }): Promise<IAir[]> {
+        const reports = await Report.find({ project: projectId }).limit(last).sort({ reportedAt: -1 });
+        return reports.map(report => (report.air));
+    }
+
     public async getLastReport(deviceId: string): Promise<IReport | null> {
         const report = await Report.findOne({ device: deviceId }).sort({ reportedAt: -1 });
         return report;
