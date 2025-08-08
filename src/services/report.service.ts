@@ -1,18 +1,23 @@
 import { ReportRepository } from "@/repositories/reports.repository";
 import { IReport } from "@/types/report";
-import { IAir, ISensorReport } from "@/types/sensors";
+import { IAggregatedSensorSnapshot, ISensorReport } from "@/types/sensors";
 import appConfig from "@/configs/app.config";
+import { ProjectRepository } from "@/repositories/project.repository";
 
 export class ReportService{
     private reportRepository: ReportRepository;
+    private projectRepository: ProjectRepository;
     constructor(){
         this.reportRepository = new ReportRepository();
+        this.projectRepository = new ProjectRepository();
     }
 
-    public async getLastAirReports(projectId: string, { last = 30 }:{
-        last: number
-    }): Promise<IAir[]> {
-        return this.reportRepository.getAirReport(projectId, { last });
+    public async getAggregatedSensorSnapshot(userId: string, projectId: string): Promise<IAggregatedSensorSnapshot|null> {
+        const project = await this.projectRepository.getUserProjectById(userId, projectId);
+        if(!project)
+            throw new Error("project doesn't exist");
+        const snapshot = await this.reportRepository.getAggregatedSensorSnapshot(projectId);
+        return snapshot;
     }
 
     public async saveReport(deviceId: string, projectId: string, report: ISensorReport): Promise<IReport> {

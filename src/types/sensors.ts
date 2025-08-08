@@ -31,3 +31,11 @@ export interface ISensorReport{
     battery: IBattery;
     charger: ICharger;
 }
+
+export interface IAggregatedSensorSnapshot {
+    air: IAir;
+    soil: ISoil;
+    basedOnReports: number;
+    timeWindowMinutes: number;
+    updatedAt: Date;
+}

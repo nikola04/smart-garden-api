@@ -1,6 +1,7 @@
+import config from "@/configs/app.config";
 import Report from "@/models/report.model";
 import { IReport } from "@/types/report";
-import { IAir, IBattery, ICharger, ILight, ISoil } from "@/types/sensors";
+import { IAggregatedSensorSnapshot, IAir, IBattery, ICharger, ILight, ISoil } from "@/types/sensors";
 import { Types } from "mongoose";
 
 export class ReportRepository {
@@ -26,14 +27,43 @@ export class ReportRepository {
         ]);
 
         const ids = devices.map(device => device._id.toString());
-        return ids.filter((id, ind) => ids.indexOf(id) == ind);
+        return ids.filter((id, ind) => ids.indexOf(id) === ind);
     }
 
-    public async getAirReport(projectId: string, { last }: {
-        last: number
-    }): Promise<IAir[]> {
-        const reports = await Report.find({ project: projectId }).limit(last).sort({ reportedAt: -1 });
-        return reports.map(report => (report.air));
+    public async getAggregatedSensorSnapshot(projectId: string): Promise<IAggregatedSensorSnapshot | null> {
+        const reports = await Report.find({ project: projectId, }).limit(config.maxProjectDevices).sort({ reportedAt: -1 });
+        if(reports.length === 0) return null;
+
+        const checked: string[] = [];
+        const latestUpdate = reports[0].reportedAt;
+        const timeWindowMinutes = 45;
+        const latestUpdateWindow = new Date(latestUpdate.getTime() - 45 * 60 * 1000); // hour before latest update
+
+        const air: IAir = ({ temperature: 0, humidity: 0 });
+        const soil: ISoil = ({ moisture: 0, sensors_used: 0 });
+
+        let n = 0;
+
+        reports.forEach(report => {
+            if(report.reportedAt <= latestUpdateWindow || checked.includes(report.id)) return;
+            air.temperature += report.air.temperature;
+            air.humidity += report.air.humidity;
+            soil.moisture += report.soil.moisture;
+            soil.sensors_used += report.soil.sensors_used;
+            n++;
+        });
+
+        air.temperature /= n;
+        air.humidity /= n;
+        soil.moisture /= n;
+
+        return ({
+            air,
+            soil,
+            basedOnReports: n,
+            timeWindowMinutes,
+            updatedAt: latestUpdate
+        });
     }
 
     public async getLastReport(deviceId: string): Promise<IReport | null> {
