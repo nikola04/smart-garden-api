@@ -11,3 +11,17 @@ export interface IProject {
 }
 
 export type ProjectDocument = IProject & Document;
+
+export type HealthStatus = "excellent"|"healthy"|"degraded"|"critical";
+export interface IHealth {
+    devices: {
+        health: number,
+        messages: string[]
+    },
+    sensors: {
+        health: number,
+        messages: string[]
+    },
+    overallHealth: number,
+    status: HealthStatus
+};

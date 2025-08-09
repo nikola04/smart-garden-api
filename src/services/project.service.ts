@@ -2,7 +2,7 @@ import appConfig from "@/configs/app.config";
 import { DeviceRepository } from "@/repositories/device.repository";
 import { ProjectRepository } from "@/repositories/project.repository";
 import { IDevice } from "@/types/device";
-import { IProject } from "@/types/project";
+import { HealthStatus, IHealth, IProject } from "@/types/project";
 import { DeviceService } from "./device.service";
 import { logger } from "@/configs/logger.config";
 import { ReportRepository } from "@/repositories/reports.repository";
@@ -63,4 +63,44 @@ export class ProjectService{
         const activeDevicesIds = await this.reportRepository.getActiveDevicesIDs(projectId);
         return devices.map(device => ({ ...device, isActive: activeDevicesIds.includes(device.id) }));
     }
+
+    public async getProjectHeatlh(userId: string, projectId: string): Promise<IHealth> {
+        const [devices, activeDevicesIDs] = await Promise.all([
+            this.deviceRepository.getProjectDevices(userId, projectId),
+            this.reportRepository.getActiveDevicesIDs(projectId)
+        ]);
+
+        const deviceMessages: string[] = [];
+        let inactiveDevices = 0;
+        devices.forEach((device) => {
+            if(activeDevicesIDs.includes(device.id)) return;
+            deviceMessages.push(`⚠️ ${device.name} is offline.`);
+            inactiveDevices++;
+        });
+
+        const deviceHealth = Math.floor(((devices.length - inactiveDevices) / devices.length) * 100);
+
+        const overallHealth = deviceHealth;
+        const status = getHealthStatus(overallHealth);
+
+        return ({
+            devices: {
+                health: deviceHealth,
+                messages: deviceMessages
+            },
+            sensors: {
+                health: 0,
+                messages: []
+            },
+            overallHealth,
+            status
+        });
+    }
+}
+
+const getHealthStatus = (health: number): HealthStatus => {
+    if(health == 100) return "excellent";
+    if(health > 90) return "healthy";
+    if(health > 40) return "degraded";
+    return "critical"
 }
