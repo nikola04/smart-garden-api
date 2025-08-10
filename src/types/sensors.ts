@@ -35,6 +35,7 @@ export interface ISensorReport{
 export interface IAggregatedSensorSnapshot {
     air: IAir;
     soil: ISoil;
+    light: ILight;
     basedOnReports: number;
     timeWindowMinutes: number;
     updatedAt: Date;
