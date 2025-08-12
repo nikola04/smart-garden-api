@@ -14,7 +14,8 @@ export interface IDevice {
     user: Types.ObjectId | IUser;
     project: Types.ObjectId | IProject;
     addedAt: Date;
-    isActive?: boolean
+    isActive?: boolean;
+    lastActive?: Date;
 }
 
 export type DeviceDocument = IDevice & Document;

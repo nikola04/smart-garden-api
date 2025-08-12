@@ -16,11 +16,11 @@ export type HealthStatus = "excellent"|"healthy"|"degraded"|"critical";
 export interface IHealth {
     devices: {
         health: number,
-        messages: string[]
+        messages: { name: string, state: string }[]
     },
     sensors: {
         health: number,
-        messages: string[]
+        messages: { name: string, state: string }[]
     },
     overallHealth: number,
     status: HealthStatus

@@ -60,21 +60,28 @@ export class ProjectService{
 
     public async getProjectDevices(userId: string, projectId: string): Promise<IDevice[]> {
         const devices = await this.deviceRepository.getProjectDevices(userId, projectId);
-        const activeDevicesIds = await this.reportRepository.getActiveDevicesIDs(projectId);
-        return devices.map(device => ({ ...device, isActive: activeDevicesIds.includes(device.id) }));
+        const activeDevices = await this.reportRepository.getActiveDevices(projectId);
+        return devices.map(device => {
+            const deviceActivity = activeDevices.find(d => d.id == device.id);
+            return ({ ...device,
+                isActive: deviceActivity != null ? true : false,
+                lastActive: deviceActivity?.lastActive
+            })
+        });
     }
 
     public async getProjectHeatlh(userId: string, projectId: string): Promise<IHealth> {
-        const [devices, activeDevicesIDs] = await Promise.all([
+        const [devices, activeDevices] = await Promise.all([
             this.deviceRepository.getProjectDevices(userId, projectId),
-            this.reportRepository.getActiveDevicesIDs(projectId)
+            this.reportRepository.getActiveDevices(projectId)
         ]);
+        const activeDevicesIds = activeDevices.map(d => d.id);
 
-        const deviceMessages: string[] = [];
+        const deviceMessages: { name: string, state: string }[] = [];
         let inactiveDevices = 0;
         devices.forEach((device) => {
-            if(activeDevicesIDs.includes(device.id)) return;
-            deviceMessages.push(`⚠️ ${device.name} is offline.`);
+            if(activeDevicesIds.includes(device.id)) return;
+            deviceMessages.push({ name: device.name ?? device.id, state: 'offline' });
             inactiveDevices++;
         });
 

@@ -7,4 +7,5 @@ export interface IDeviceDTO {
     addedAt: Date;
     userId: string;
     isActive?: boolean;
+    lastActive?: Date
 }

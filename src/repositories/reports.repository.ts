@@ -12,7 +12,7 @@ export class ReportRepository {
         ReportRepository.instance = this;
     }
 
-    public async getActiveDevicesIDs(projectId: string): Promise<string[]>{
+    public async getActiveDevices(projectId: string): Promise<{ id: string; lastActive: Date }[]>{
         const activeDelay = new Date(Date.now() - 45 * 60 * 1000);
 
         const devices = await Report.aggregate([
@@ -22,11 +22,16 @@ export class ReportRepository {
                     project: new Types.ObjectId(projectId)
                 }
             },
-            { $group: { _id: "$device" } }
+            { $group: { 
+                _id: "$device",
+                lastActive: { $max: "$reportedAt" }
+            } }
         ]);
 
-        const ids = devices.map(device => device._id.toString());
-        return ids.filter((id, ind) => ids.indexOf(id) === ind);
+        return devices.map(d => ({
+            id: d._id.toString(),
+            lastActive: d.lastActive
+        }));
     }
 
     public async getRecentProjectReports(projectId: string, { limit }: { limit: number }): Promise<IReport[]> {
