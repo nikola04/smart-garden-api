@@ -62,11 +62,11 @@ export class ProjectService{
         const devices = await this.deviceRepository.getProjectDevices(userId, projectId);
         const activeDevices = await this.reportRepository.getActiveDevices(projectId);
         return devices.map(device => {
-            const deviceActivity = activeDevices.find(d => d.id == device.id);
+            const deviceActivity = activeDevices.find(d => d.id === device.id);
             return ({ ...device,
-                isActive: deviceActivity != null ? true : false,
+                isActive: deviceActivity !== null ? true : false,
                 lastActive: deviceActivity?.lastActive
-            })
+            });
         });
     }
 
@@ -81,7 +81,7 @@ export class ProjectService{
         let inactiveDevices = 0;
         devices.forEach((device) => {
             if(activeDevicesIds.includes(device.id)) return;
-            deviceMessages.push({ name: device.name ?? device.id, state: 'offline' });
+            deviceMessages.push({ name: device.name ?? device.id, state: "offline" });
             inactiveDevices++;
         });
 
@@ -106,8 +106,8 @@ export class ProjectService{
 }
 
 const getHealthStatus = (health: number): HealthStatus => {
-    if(health == 100) return "excellent";
+    if(health === 100) return "excellent";
     if(health > 90) return "healthy";
     if(health > 40) return "degraded";
-    return "critical"
-}
+    return "critical";
+};

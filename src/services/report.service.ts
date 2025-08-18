@@ -17,7 +17,7 @@ export class ReportService{
         const project = await this.projectRepository.getUserProjectById(userId, projectId);
         if(!project)
             throw new Error("project doesn't exist");
-        
+
         const recentReports = await this.reportRepository.getRecentProjectReports(projectId, { limit: config.maxProjectDevices });
         if(recentReports.length === 0) return null;
 

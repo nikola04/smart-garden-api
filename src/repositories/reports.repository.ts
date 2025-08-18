@@ -1,6 +1,6 @@
 import Report from "@/models/report.model";
 import { IReport } from "@/types/report";
-import { IAggregatedSensorSnapshot, IAir, IBattery, ICharger, ILight, ISoil } from "@/types/sensors";
+import { IAir, IBattery, ICharger, ILight, ISoil } from "@/types/sensors";
 import { Types } from "mongoose";
 
 export class ReportRepository {
@@ -22,7 +22,7 @@ export class ReportRepository {
                     project: new Types.ObjectId(projectId)
                 }
             },
-            { $group: { 
+            { $group: {
                 _id: "$device",
                 lastActive: { $max: "$reportedAt" }
             } }
